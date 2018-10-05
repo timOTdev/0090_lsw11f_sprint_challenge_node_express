@@ -26,4 +26,15 @@ router.route('/')
       .catch(err => res.status(500).json({ error: "The request for actions could not be retrieved" }));
   })
 
+router.route('/:id')
+  .delete((req, res) => {
+    const { id } = req.params;
+    actionsDb.remove(id)
+      .then(removedAction => {
+        if (!removedAction) return res.status(404).json({ error: "The action with the specified ID does not exist." });
+        return res.status(202).json(removedAction);
+      })
+      .catch(err => res.status(500).json({ error: "The action could not be removed." }));
+  })
+
   module.exports = router;
