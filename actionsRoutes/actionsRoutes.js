@@ -27,6 +27,17 @@ router.route('/')
   })
 
 router.route('/:id')
+  .put((req, res) => {
+    const { id } = req.params;
+    const { project_id, description, notes, completed } = req.body;
+    const editedAction = { project_id, description, notes, completed: completed || false };
+    actionsDb.update(id, editedAction)
+    .then(updatedAction => {
+        if (!updatedAction) return res.status(404).json({ error: "The action with the specified ID does not exist." });
+        return res.status(202).json(updatedAction);
+      })
+      .catch(err => res.status(400).json({ error: "The action information could not be modified" }));
+  })
   .delete((req, res) => {
     const { id } = req.params;
     actionsDb.remove(id)
