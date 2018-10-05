@@ -40,6 +40,15 @@ router.route('/:id')
       })
       .catch(err => res.status(500).json({ error: "The project information could not be modified." }));
   })
+  .delete((req,res) => {
+    const { id } = req.params;
+    projectsDb.remove(id)
+      .then(removedProject => {
+        if (!removedProject) return res.status(404).json({ error: "The project with the specified ID does not exist." });
+        return res.status(202).json(removedProject);
+      })
+      .catch(err => res.status(500).json({ error: "The project could not be removed." }));
+  })
 
   router.route('/:id/actions')
     .get((req, res) => {
